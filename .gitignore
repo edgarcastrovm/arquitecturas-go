@@ -1,0 +1,6 @@
+extra/
+*.env
+*.sum
+*.log
+cashin-jmeter/*.*
+!cashin-jmeter/*.jmx

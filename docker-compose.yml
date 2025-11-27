@@ -1,0 +1,48 @@
+services:
+  # 1. Base de Datos PostgreSQL
+  db:
+    image: postgres:17
+    container_name: cashin_postgres_db
+    environment:
+      POSTGRES_DB: cashin_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. API Hexagonal 
+  api-cashin-exagonal:
+    build: cashin-hexagonal/deployments/docker/.
+    container_name: cashin_api_hexagonal
+    ports:
+      - "9090:8080" 
+    depends_on:
+      - db
+    environment:
+      # Variables para conectar a la DB
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: cashin_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+  # 3. API Modular 
+  api-cashin-modular:
+    build: cashin-modular/deployments/docker/.
+    container_name: cashin_api_modular
+    ports:
+      - "9091:8080" 
+    depends_on:
+      - db
+    environment:
+      # Variables para conectar a la DB
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: cashin_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+volumes:
+  postgres_data:
